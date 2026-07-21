@@ -19,6 +19,29 @@ class Tache:
     def vers_dict(self):
         return {"nom": self.nom, "faite": self.faite}
 
+    def __str__(self):
+        return self.description()
+
+    def __repr__(self):
+        return f"Tache({self.nom!r}, faite={self.faite})"
+    
+    def __eq__(self, autre):
+        if isinstance(autre, Tache):
+            return self.nom == autre.nom and self.faite == autre.faite
+        return False
+
+class TachePrioritaire(Tache):
+    def __init__(self, nom, priorite):
+        super().__init__(nom)
+        self.priorite = priorite
+
+    def description(self):
+        return f"(P{self.priorite}) " + super().description()
+
+    def vers_dict(self):
+        return {"nom": self.nom, "faite": self.faite, "priorite" : self.priorite}
+    
+
 class Gestionnaire:
     def __init__(self):
         self.taches = []
@@ -47,7 +70,10 @@ class Gestionnaire:
 
     def transformation_vers_tache(self, dico):
         for tache in dico:
-            nouvelleTache = Tache(tache["nom"])
+            if "priorite" in tache:
+                nouvelleTache = TachePrioritaire(tache["nom"], tache["priorite"])
+            else:
+                nouvelleTache = Tache(tache["nom"])
             if tache["faite"]:
                 nouvelleTache.faite = True
             self.ajouter(nouvelleTache)
@@ -65,6 +91,10 @@ class Gestionnaire:
         except FileNotFoundError:
             self.taches = []
 
+    def __len__(self):
+        return len(self.taches)
+
+
 if __name__ == "__main__":        
     pain = Tache("Acheter du pain")
     tomates = Tache("Acheter des tomates")
@@ -77,4 +107,26 @@ if __name__ == "__main__":
     petitLivret = Gestionnaire()
     petitLivret.charger("taches.json")
     print(petitLivret.lister())
-
+    print(pain)
+    print(courses)
+    print(len(courses))
+    gestion = Gestionnaire()
+    print(len(gestion))
+    print(pain == tomates)
+    tomates = Tache("Acheter du pain")
+    print(pain == "requin")
+    print([pain, tomates, pates])
+    abeille = Tache("Aider une abeille")
+    print(abeille)
+    tomates_prio = TachePrioritaire("tomates", 1)
+    new_courses = Gestionnaire()
+    new_courses.ajouter(pain)
+    new_courses.ajouter(tomates_prio)
+    new_courses.ajouter(pates)
+    print(new_courses.lister())
+    print(new_courses.taches)
+    new_courses.sauvegarder("test_prio.json")
+    test_new_courses = Gestionnaire()
+    test_new_courses.charger("test_prio.json")
+    print(test_new_courses.lister())
+    print(test_new_courses.taches)
