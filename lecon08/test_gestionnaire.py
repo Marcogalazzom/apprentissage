@@ -81,3 +81,30 @@ def test_prio_sauvegarder_recharger_lister():
     courses_recharge = Gestionnaire()
     courses_recharge.charger("prio.json")
     assert courses_recharge.lister() == ['[ ] Acheter du pain', '(P1) [ ] Acheter des tomates', '[ ] Acheter des pâtes']
+
+def test_reste_travail_oui():
+    pain = Tache("Acheter du pain")
+    tomates = Tache("Acheter des tomates")
+    pates = Tache("Acheter des pâtes")
+    pain.marquer_faite()
+    pates.marquer_faite()
+    g = Gestionnaire()
+    g.ajouter(pain)
+    g.ajouter(tomates)
+    g.ajouter(pates)
+    assert g.reste_du_travail() == True
+
+def test_reste_travail_non():
+    pain = Tache("Acheter du pain")
+    tomates = Tache("Acheter des tomates")
+    pates = Tache("Acheter des pâtes")
+    pain.marquer_faite()
+    tomates.marquer_faite()
+    pates.marquer_faite()
+    g = Gestionnaire()
+    g.ajouter(pain)
+    g.ajouter(tomates)
+    g.ajouter(pates)
+    assert g.reste_du_travail() == False
+
+    

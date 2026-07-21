@@ -56,17 +56,10 @@ class Gestionnaire:
         self.taches[indice].marquer_faite()
 
     def lister(self):
-        liste_descriptions = []
-        for tache in self.taches:
-            liste_descriptions.append(tache.description())
-        return liste_descriptions
+        return [tache.description() for tache in self.taches]
 
     def transformation_vers_dico(self):
-        liste_dico = []
-        if self.taches:
-            for tache in self.taches:
-                liste_dico.append(tache.vers_dict())
-        return liste_dico
+        return [tache.vers_dict() for tache in self.taches]
 
     def transformation_vers_tache(self, dico):
         for tache in dico:
@@ -94,6 +87,8 @@ class Gestionnaire:
     def __len__(self):
         return len(self.taches)
 
+    def reste_du_travail(self):
+        return any(not t.faite for t in self.taches)
 
 if __name__ == "__main__":        
     pain = Tache("Acheter du pain")
